@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://d4bkbgbuk1x25"]
+
+[ext_resource type="PackedScene" uid="uid://54yj13o1i77l" path="res://car.tscn" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://dfc1c4hu3xktx" path="res://prototype.png" id="2_0xm2m"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_0xm2m"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
+albedo_texture = ExtResource("2_0xm2m")
+uv1_scale = Vector3(1000, 1000, 1000)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_h2yge"]
+material = SubResource("StandardMaterial3D_h2yge")
+size = Vector2(1000, 1000)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Node3D" parent="." instance=ExtResource("1_ig7tw")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("WorldBoundaryShape3D_0xm2m")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("PlaneMesh_h2yge")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.925501, 0.340173, 0.166524, 0, -0.439673, 0.898158, 0.378746, -0.831246, -0.406917, 0, 0, 0)

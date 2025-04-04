@@ -1,0 +1,19 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "t-racing", "t-racing.csproj", "{B448FE7B-5D36-477A-AE5B-8FDCA546E725}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B448FE7B-5D36-477A-AE5B-8FDCA546E725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B448FE7B-5D36-477A-AE5B-8FDCA546E725}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B448FE7B-5D36-477A-AE5B-8FDCA546E725}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{B448FE7B-5D36-477A-AE5B-8FDCA546E725}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{B448FE7B-5D36-477A-AE5B-8FDCA546E725}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{B448FE7B-5D36-477A-AE5B-8FDCA546E725}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+	EndGlobalSection
+EndGlobal
