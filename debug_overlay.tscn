@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bv4jx7epvey2i"]
+
+[ext_resource type="Script" uid="uid://ckexe8x8ujx0d" path="res://DebugOverlay.cs" id="1_0rgvu"]
+[ext_resource type="Script" uid="uid://d26bms74etj5g" path="res://DebugDraw3D.cs" id="2_aliov"]
+
+[node name="DebugOverlay" type="CanvasLayer"]
+follow_viewport_enabled = true
+script = ExtResource("1_0rgvu")
+
+[node name="DebugDraw3D" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_aliov")

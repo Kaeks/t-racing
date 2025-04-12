@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://c6wi6sui3fwkh"]
+
+[ext_resource type="Script" uid="uid://glg0m7nmr03o" path="res://RaceUI.cs" id="1_b2hft"]
+[ext_resource type="FontFile" uid="uid://dy6hcrwb0nq0j" path="res://fonts/WO3.ttf" id="2_b2hft"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_b2hft"]
+font = ExtResource("2_b2hft")
+font_size = 44
+
+[sub_resource type="LabelSettings" id="LabelSettings_mxqm3"]
+font = ExtResource("2_b2hft")
+font_size = 24
+
+[node name="RaceUi" type="Control" node_paths=PackedStringArray("_speedLabel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_b2hft")
+_speedLabel = NodePath("SpeedGauge/SpeedLabel")
+
+[node name="SpeedGauge" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 789.0
+offset_top = 576.0
+offset_right = 1137.0
+offset_bottom = 629.0
+
+[node name="SpeedLabel" type="Label" parent="SpeedGauge"]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 1.0
+offset_right = 133.0
+offset_bottom = 46.0
+text = "0"
+label_settings = SubResource("LabelSettings_b2hft")
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="kmhLabel" type="Label" parent="SpeedGauge"]
+layout_mode = 0
+offset_left = 137.0
+offset_top = 17.0
+offset_right = 201.0
+offset_bottom = 42.0
+text = "km/h"
+label_settings = SubResource("LabelSettings_mxqm3")
