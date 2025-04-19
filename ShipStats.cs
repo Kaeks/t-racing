@@ -5,32 +5,13 @@ using System;
 public partial class ShipStats : Resource
 {
     [Export]
-    public float TurnRate { get; set; }
-
+    public float thrust;
     [Export]
-    public float Thrust { get; set; }
-
+    public float stabilizer;
     [Export]
-    public float Weight { get; set; }
-
+    public float weight;
     [Export]
-    public float DragCoeff { get; set; }
-
+    public float area;
     [Export]
-    public float Area { get; set; }
-
-    [Export]
-    public float Boost { get; set; }
-
-    public ShipStats() : this(0, 0, 0, 0, 0, 0) {}
-
-    public ShipStats(float turnRate, float thrust, float weight, float dragCoeff, float area, float boost) {
-        TurnRate = turnRate;
-        Thrust = thrust;
-        Weight = weight;
-        DragCoeff = dragCoeff;
-        Area = area;
-        Boost = boost;
-    }
-
+    public float dragCoeff;
 }
