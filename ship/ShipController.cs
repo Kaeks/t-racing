@@ -1,12 +1,16 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 
 public struct ShipInput {
 	public float Thrust { get; set; }
-	public float Steer { get; set; }
+	public readonly float Steer { get {
+		return SteerRight - SteerLeft;
+	} }
+	public float SteerLeft { get; set; }
+	public float SteerRight { get; set; }
 	public float AirbrakeLeft { get; set; }
 	public float AirbrakeRight { get; set; }
+	public bool Boost { get; set; }
 }
 
 public partial class ShipController : RigidBody3D
@@ -19,12 +23,28 @@ public partial class ShipController : RigidBody3D
 	public Airbrake[] _airbrakesLeft = [];
 	[Export]
 	public Airbrake[] _airbrakesRight = [];
+	[Export]
+	public Node3D _model;
+	[Export]
+	public BoostSystem _boostSystem;
+
+	public Node3D CameraAnchor { get; private set; }
 
 	// air density
 	private float density = 1.2f;
 
+	// roll for turning
+	private float maxTilt = 1;
+	private float tilt;
+	private float tiltGoal;
+
 	public override void _Ready()
 	{
+
+		CameraAnchor = GetNode<Node3D>("%CameraAnchor");
+
+		GD.Print(CameraAnchor);
+
 		Mass = _stats.weight;
 		foreach (Airbrake brake in _airbrakesLeft) {
 			GD.Print(brake.Position);
@@ -47,8 +67,11 @@ public partial class ShipController : RigidBody3D
 		if (@event.IsAction("ship_thrust")) {
 			_input.Thrust = @event.GetActionStrength("ship_thrust");
 		}
-		if (@event.IsAction("ship_left") || @event.IsAction("ship_right")) {
-			_input.Steer = @event.GetActionStrength("ship_right") - @event.GetActionStrength("ship_left");
+		if (@event.IsAction("ship_left")) {
+			_input.SteerLeft = @event.GetActionStrength("ship_left");
+		}
+		if (@event.IsAction("ship_right")) {
+			_input.SteerRight = @event.GetActionStrength("ship_right");
 		}
 		if (@event.IsAction("ship_airbrake_left")) {
 			_input.AirbrakeLeft = @event.GetActionStrength("ship_airbrake_left");
@@ -56,12 +79,17 @@ public partial class ShipController : RigidBody3D
 		if (@event.IsAction("ship_airbrake_right")) {
 			_input.AirbrakeRight = @event.GetActionStrength("ship_airbrake_right");
 		}
+		if (@event.IsAction("ship_boost")) {
+			_input.Boost = @event.IsActionPressed("ship_boost");
+		}
     }
 
 
 	public override void _Process(double delta)
 	{
-
+		if (_input.Boost) {
+			_boostSystem.OnTrigger();
+		}
 	}
 
     public override void _PhysicsProcess(double delta)
@@ -77,19 +105,48 @@ public partial class ShipController : RigidBody3D
 
 		float maxForce = _stats.thrust * _stats.stabilizer;
 		float impulse = Mass * SideVelocity.Length();
-		float stabilizingStrength = Math.Max(Math.Min(impulse / maxForce, 1), 0.5f) * maxForce;
+		float stabilizingStrength = Math.Clamp(impulse / maxForce, 0.5f, 1) * maxForce;
 		Vector3 slideStabilization = - SideVelocity.Normalized() * stabilizingStrength;
 		ApplyForce(slideStabilization);
 
 		float rotPerSec;
 
-		if (Math.Abs(_input.Steer) > 0) {
-			float deltaTheta = - _input.Steer * (float) delta;
+		tiltGoal = _input.Steer * maxTilt;
+
+		float tiltEpsilon = 0.1f;
+		if (Math.Abs(tiltGoal - tilt) > tiltEpsilon) {
+			tilt += _stats.tiltRate * (float) delta * Math.Sign(tiltGoal - tilt);
+		} else {
+			tilt = tiltGoal;
+		}
+
+		_model.Rotation = Vector3.Forward * tilt;
+
+		if (Math.Abs(tilt) > 0) {
+			float deltaTheta = - tilt * (float) delta;
 			float omega = deltaTheta / (float) delta;
-			float turnRadius = ForwardVelocity.Length() / omega;
+			float turnRadius = LinearVelocity.Length() / omega;
 			RotateY(deltaTheta);
-			Vector3 centripetal = - Basis.X * Mass * ForwardVelocity.Length() / omega;
-			ApplyForce(centripetal);
+
+			// effectiveness of circle path force depends on if the ship is even facing correctly
+			Vector3 facing = - Basis.Z;
+			float angleBetween = facing.SignedAngleTo(LinearVelocity, Vector3.Up);
+			// left should be minus, right should be plus
+			float epsilon = 0.02f;
+			float maxAngle = (float) Math.PI; // loses all effectiveness
+			float effectiveness;
+			if (Math.Abs(angleBetween) > maxAngle) {
+				effectiveness = 0;
+			} else if (_input.Steer * angleBetween > 0 || Math.Abs(angleBetween) < epsilon) { // same sign
+				effectiveness = 1;
+			} else {
+				float i = Math.Max(0, 1 - Math.Abs(angleBetween) / maxAngle);
+				float raw = (float) Math.Pow(i, 2);
+				effectiveness = raw;
+			}
+			Vector3 direction = LinearVelocity.Normalized().Rotated(Vector3.Up, (float) (Math.PI / 2));
+			Vector3 centripetal = direction * Mass * LinearVelocity.Length() * omega;
+			ApplyForce(centripetal * effectiveness);
 		}
 
 		if (_input.AirbrakeLeft > 0) {

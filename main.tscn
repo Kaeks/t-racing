@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://d4bkbgbuk1x25"]
 
-[ext_resource type="Script" uid="uid://cegidqhomr5wr" path="res://FloorGenerator.cs" id="1_0xm2m"]
-[ext_resource type="PackedScene" uid="uid://bbfemhneyiuxr" path="res://floor_tile.tscn" id="2_h2yge"]
-[ext_resource type="PackedScene" uid="uid://c6wi6sui3fwkh" path="res://race_ui.tscn" id="3_h2yge"]
-[ext_resource type="PackedScene" uid="uid://pkrfndo2g15d" path="res://ship.tscn" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://cegidqhomr5wr" path="res://testing/FloorGenerator.cs" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://bbfemhneyiuxr" path="res://testing/floor_tile.tscn" id="2_h2yge"]
+[ext_resource type="PackedScene" uid="uid://pkrfndo2g15d" path="res://ship/ship.tscn" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://d23trblas0j7m" path="res://ui/manufacturer_hud/man01/man01.tscn" id="4_lquwl"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_0xm2m"]
 
@@ -20,7 +20,7 @@ shape = SubResource("WorldBoundaryShape3D_0xm2m")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.925501, 0.340173, 0.166524, 0, -0.439673, 0.898158, 0.378746, -0.831246, -0.406917, 0, 0, 0)
 
-[node name="RaceUi" parent="." node_paths=PackedStringArray("_shipController") instance=ExtResource("3_h2yge")]
-_shipController = NodePath("../Ship")
-
 [node name="Ship" parent="." instance=ExtResource("4_1bvp3")]
+
+[node name="Man01" parent="." node_paths=PackedStringArray("ship") instance=ExtResource("4_lquwl")]
+ship = NodePath("../Ship")

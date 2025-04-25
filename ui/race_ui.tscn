@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://c6wi6sui3fwkh"]
 
-[ext_resource type="Script" uid="uid://glg0m7nmr03o" path="res://RaceUI.cs" id="1_b2hft"]
+[ext_resource type="Script" uid="uid://glg0m7nmr03o" path="res://ui/RaceUI.cs" id="1_b2hft"]
 [ext_resource type="FontFile" uid="uid://dy6hcrwb0nq0j" path="res://fonts/WO3.ttf" id="2_b2hft"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_b2hft"]

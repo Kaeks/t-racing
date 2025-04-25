@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://d23trblas0j7m"]
+
+[ext_resource type="Script" uid="uid://bdjqetmforbra" path="res://ui/manufacturer_hud/CommonHud.cs" id="1_f3p54"]
+[ext_resource type="PackedScene" uid="uid://sx8xy8k41c5q" path="res://ui/manufacturer_hud/man01/man01_spedometer.tscn" id="2_rawfk"]
+
+[node name="Man01" type="Control" node_paths=PackedStringArray("spedometer")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_f3p54")
+spedometer = NodePath("Man01Spedometer")
+
+[node name="Man01Spedometer" parent="." instance=ExtResource("2_rawfk")]
+layout_mode = 1

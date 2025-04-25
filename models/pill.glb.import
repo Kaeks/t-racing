@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://ds40fkolw615v"
-path="res://.godot/imported/pill.glb-841f11b898fa223958bc8a5ae9b6d789.scn"
+path="res://.godot/imported/pill.glb-3afb6f6f678938b7fd39ecf485cb69e0.scn"
 
 [deps]
 
-source_file="res://pill.glb"
-dest_files=["res://.godot/imported/pill.glb-841f11b898fa223958bc8a5ae9b6d789.scn"]
+source_file="res://models/pill.glb"
+dest_files=["res://.godot/imported/pill.glb-3afb6f6f678938b7fd39ecf485cb69e0.scn"]
 
 [params]
 

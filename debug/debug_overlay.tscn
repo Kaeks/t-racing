@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bv4jx7epvey2i"]
 
-[ext_resource type="Script" uid="uid://ckexe8x8ujx0d" path="res://DebugOverlay.cs" id="1_0rgvu"]
-[ext_resource type="Script" uid="uid://d26bms74etj5g" path="res://DebugDraw3D.cs" id="2_aliov"]
+[ext_resource type="Script" uid="uid://ckexe8x8ujx0d" path="res://debug/DebugOverlay.cs" id="1_0rgvu"]
+[ext_resource type="Script" uid="uid://d26bms74etj5g" path="res://debug/DebugDraw3D.cs" id="2_aliov"]
 
 [node name="DebugOverlay" type="CanvasLayer"]
 follow_viewport_enabled = true

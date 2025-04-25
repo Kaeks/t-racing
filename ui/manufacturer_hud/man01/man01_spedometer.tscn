@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=3 uid="uid://sx8xy8k41c5q"]
+
+[ext_resource type="Texture2D" uid="uid://cmxdj7evsevsy" path="res://textures/byorzoj.png" id="1_78113"]
+[ext_resource type="Script" uid="uid://dkswy3dpv25r1" path="res://ui/manufacturer_hud/man01/Man01Spedometer.cs" id="1_m24fv"]
+[ext_resource type="SpriteFrames" uid="uid://cti8ku5lg1d43" path="res://textures/byorzoj-spedometer.tres" id="2_m24fv"]
+
+[node name="Man01Spedometer" type="Control" node_paths=PackedStringArray("sprite")]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -311.0
+offset_top = -190.0
+offset_right = -311.0
+offset_bottom = -190.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("1_m24fv")
+sprite = NodePath("Sprite")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 7.0
+offset_top = 101.5
+offset_right = 112.0
+offset_bottom = 183.5
+texture = ExtResource("1_78113")
+stretch_mode = 4
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(155, 79.5)
+scale = Vector2(2.26563, 2.26563)
+sprite_frames = ExtResource("2_m24fv")
+speed_scale = 0.0

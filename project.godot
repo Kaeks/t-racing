@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-DebugOverlay="*res://debug_overlay.tscn"
+DebugOverlay="*res://debug/debug_overlay.tscn"
 
 [dotnet]
 
