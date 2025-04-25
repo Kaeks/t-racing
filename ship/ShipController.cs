@@ -24,17 +24,16 @@ public partial class ShipController : RigidBody3D
 	[Export]
 	public Airbrake[] _airbrakesRight = [];
 	[Export]
-	public Node3D _model;
-	[Export]
 	public BoostSystem _boostSystem;
 
 	public Node3D CameraAnchor { get; private set; }
+	public Node3D Model { get; private set; }
 
 	// air density
 	private float density = 1.2f;
 
 	// roll for turning
-	private float maxTilt = 1;
+	private float maxTilt = 0.5f;
 	private float tilt;
 	private float tiltGoal;
 
@@ -42,6 +41,7 @@ public partial class ShipController : RigidBody3D
 	{
 
 		CameraAnchor = GetNode<Node3D>("%CameraAnchor");
+		Model = GetNode<Node3D>("%ShipModel");
 
 		GD.Print(CameraAnchor);
 
@@ -120,10 +120,11 @@ public partial class ShipController : RigidBody3D
 			tilt = tiltGoal;
 		}
 
-		_model.Rotation = Vector3.Forward * tilt;
+		Model.Rotation = Vector3.Forward * tilt;
 
 		if (Math.Abs(tilt) > 0) {
-			float deltaTheta = - tilt * (float) delta;
+			float turn = tilt / maxTilt * _stats.maxTurn;
+			float deltaTheta = - turn * (float) delta;
 			float omega = deltaTheta / (float) delta;
 			float turnRadius = LinearVelocity.Length() / omega;
 			RotateY(deltaTheta);

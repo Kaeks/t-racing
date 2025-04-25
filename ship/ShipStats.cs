@@ -13,6 +13,8 @@ public partial class ShipStats : Resource
     [Export]
     public float tiltRate;
     [Export]
+    public float maxTurn;
+    [Export]
     public float area;
     [Export]
     public float dragCoeff;

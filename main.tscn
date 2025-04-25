@@ -21,6 +21,7 @@ shape = SubResource("WorldBoundaryShape3D_0xm2m")
 transform = Transform3D(0.925501, 0.340173, 0.166524, 0, -0.439673, 0.898158, 0.378746, -0.831246, -0.406917, 0, 0, 0)
 
 [node name="Ship" parent="." instance=ExtResource("4_1bvp3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="Man01" parent="." node_paths=PackedStringArray("ship") instance=ExtResource("4_lquwl")]
 ship = NodePath("../Ship")

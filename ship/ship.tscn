@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://pkrfndo2g15d"]
+[gd_scene load_steps=14 format=3 uid="uid://pkrfndo2g15d"]
 
 [ext_resource type="Script" uid="uid://bq1pnbvxbcaw0" path="res://ship/ShipController.cs" id="1_v4325"]
 [ext_resource type="Script" uid="uid://byq2ihdbyi0if" path="res://ship/ShipStats.cs" id="2_c3vuw"]
-[ext_resource type="PackedScene" uid="uid://ds40fkolw615v" path="res://models/pill.glb" id="3_78o8j"]
+[ext_resource type="Script" uid="uid://bv6laxuvsbb44" path="res://ship/Wiggler.cs" id="3_6v61j"]
+[ext_resource type="PackedScene" uid="uid://ccejx61gtonfp" path="res://models/ship.glb" id="3_niecj"]
 [ext_resource type="Script" uid="uid://kax7wcd3g3bb" path="res://ship/Airbrake.cs" id="4_c3vuw"]
 [ext_resource type="Script" uid="uid://dmy4j4m0i8lw2" path="res://ship/RaceCamera.cs" id="5_78o8j"]
 [ext_resource type="Script" uid="uid://bjyf2c4tfxyt1" path="res://ship/boost/BurstBoost.cs" id="6_niecj"]
@@ -15,15 +16,66 @@ script = ExtResource("2_c3vuw")
 thrust = 10000.0
 stabilizer = 1.0
 weight = 750.0
-tiltRate = 5.0
+tiltRate = 2.5
+maxTurn = 2.0
 area = 2.0
 dragCoeff = 0.15
-BoostStrength = 10000.0
+BoostStrength = 25000.0
 metadata/_custom_type_script = "uid://byq2ihdbyi0if"
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_h2yge"]
+height = 2.5
 
-[node name="Ship" type="RigidBody3D" node_paths=PackedStringArray("_airbrakesLeft", "_airbrakesRight", "_model", "_boostSystem")]
+[sub_resource type="Animation" id="Animation_mysf1"]
+resource_name = "ship_wiggle"
+length = 3.0
+loop_mode = 1
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ship")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0.4, 1, 0, -0.1, 0, 0.9, 1, 0, 0.1, 0, 1.9, 1, 0, -0.1, 0, 2.4, 1, 0, 0.1, 0)
+tracks/1/type = "rotation_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ship")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0.5, 1, 0, 0, -0.017, 1, 1, 1, 0, 0, 0.017, 1, 2, 1, 0, 0, 0.017, 1, 2.5, 1, 0, 0, -0.017, 1)
+tracks/2/type = "position_3d"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ship")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0.266667, 1, -0.1, 0, 0, 0.766667, 1, -0.1, 0, 0, 1.26667, 1, 0, 0, 0, 1.76667, 1, 0.1, 0, 0, 2.26667, 1, 0.1, 0, 0, 2.76667, 1, 0, 0, 0)
+
+[sub_resource type="Animation" id="Animation_6v61j"]
+resource_name = "RESET"
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ship")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
+tracks/1/type = "rotation_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ship")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ufgy0"]
+_data = {
+&"RESET": SubResource("Animation_6v61j"),
+&"ship_wiggle": SubResource("Animation_mysf1")
+}
+
+[node name="Ship" type="RigidBody3D" node_paths=PackedStringArray("_airbrakesLeft", "_airbrakesRight", "_boostSystem")]
 axis_lock_angular_x = true
 axis_lock_angular_z = true
 physics_material_override = SubResource("PhysicsMaterial_v4325")
@@ -31,7 +83,6 @@ script = ExtResource("1_v4325")
 _stats = SubResource("Resource_272bh")
 _airbrakesLeft = [NodePath("Airbrakes/Airbrake1")]
 _airbrakesRight = [NodePath("Airbrakes/Airbrake2")]
-_model = NodePath("ShipModel")
 _boostSystem = NodePath("BoostSystem")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -39,21 +90,28 @@ transform = Transform3D(2.25, 0, 0, 0, -9.83506e-08, -2.25, 0, 2.25, -9.83506e-0
 shape = SubResource("CapsuleShape3D_h2yge")
 
 [node name="ShipModel" type="Node3D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_6v61j")
 
-[node name="pill" parent="ShipModel" instance=ExtResource("3_78o8j")]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+[node name="ship" parent="ShipModel" instance=ExtResource("3_niecj")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="ShipModel"]
+libraries = {
+&"": SubResource("AnimationLibrary_ufgy0")
+}
+autoplay = "ship_wiggle"
 
 [node name="Airbrakes" type="Node3D" parent="."]
 
 [node name="Airbrake1" type="Node3D" parent="Airbrakes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.5, 1.35)
 script = ExtResource("4_c3vuw")
-size = 1.0
+size = 0.5
 
 [node name="Airbrake2" type="Node3D" parent="Airbrakes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.5, 1.35)
 script = ExtResource("4_c3vuw")
-size = 1.0
+size = 0.5
 
 [node name="CameraPivot" type="Node3D" parent="."]
 unique_name_in_owner = true
