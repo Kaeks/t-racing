@@ -7,6 +7,8 @@ public partial class ShipStats : Resource
     [Export]
     public float thrust;
     [Export]
+    public float thrustGain;
+    [Export]
     public float stabilizer;
     [Export]
     public float weight;

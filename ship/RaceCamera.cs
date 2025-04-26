@@ -56,9 +56,10 @@ public partial class RaceCamera : Camera3D
 		// To shift the camera sideways when we are drifting
 		if (localShipVelocity.Length() > 1) {
 			float driftAngle = Vector3.Forward.SignedAngleTo(localShipVelocity, Vector3.Up);
-			float sideShiftWeight = Mathf.Lerp(0, 1, driftAngle / maxDriftAngle);
+			float turnAngle = ship.Tilt;
+			float sideShiftWeight = Mathf.Lerp(0, 1, driftAngle / maxDriftAngle) + Mathf.Lerp(0, 1, turnAngle / 0.5f) * 0.5f;
 			float sideShift = Mathf.Lerp(0, maxSideShift, sideShiftWeight);
-			shift.X = sideShift;
+			shift.X += sideShift;
 		}
 
 		float rawAccel = (float) ((localShipVelocity.Length() - lastShipVelocity.Length()) / delta);
@@ -66,7 +67,7 @@ public partial class RaceCamera : Camera3D
 		float accel = Mathf.Clamp(rawAccel, maxDecel, maxAccel);
 		float distanceWeight = Mathf.Lerp(0, 1, (accel - maxDecel) / (maxAccel - maxDecel));
 		float distanceShift = Mathf.Lerp(minDistance, maxDistance, distanceWeight);
-		shift.Z = distanceShift;
+		shift.Z += distanceShift;
 
 		float fov = Mathf.Lerp(minFov, maxFov, distanceWeight);
 		Fov = Mathf.Lerp(Fov, fov, (float) (smoothing * delta));

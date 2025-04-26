@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://d4bkbgbuk1x25"]
+[gd_scene load_steps=7 format=3 uid="uid://d4bkbgbuk1x25"]
 
 [ext_resource type="Script" uid="uid://cegidqhomr5wr" path="res://testing/FloorGenerator.cs" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://bbfemhneyiuxr" path="res://testing/floor_tile.tscn" id="2_h2yge"]
+[ext_resource type="Script" uid="uid://dp4uhqyssprvt" path="res://LoadManager.cs" id="3_lquwl"]
 [ext_resource type="PackedScene" uid="uid://pkrfndo2g15d" path="res://ship/ship.tscn" id="4_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://d23trblas0j7m" path="res://ui/manufacturer_hud/man01/man01.tscn" id="4_lquwl"]
 
@@ -12,7 +13,7 @@
 [node name="StaticBody3D" type="StaticBody3D" parent="." node_paths=PackedStringArray("ship")]
 script = ExtResource("1_0xm2m")
 tileScene = ExtResource("2_h2yge")
-ship = NodePath("../Ship")
+ship = NodePath("../Ships/Player")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("WorldBoundaryShape3D_0xm2m")
@@ -20,8 +21,24 @@ shape = SubResource("WorldBoundaryShape3D_0xm2m")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.925501, 0.340173, 0.166524, 0, -0.439673, 0.898158, 0.378746, -0.831246, -0.406917, 0, 0, 0)
 
-[node name="Ship" parent="." instance=ExtResource("4_1bvp3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+[node name="LoadManager" type="Node3D" parent="." node_paths=PackedStringArray("raceUI", "shipsContainer")]
+script = ExtResource("3_lquwl")
+raceUI = NodePath("../RaceUI")
+shipsContainer = NodePath("../Ships")
 
-[node name="Man01" parent="." node_paths=PackedStringArray("ship") instance=ExtResource("4_lquwl")]
-ship = NodePath("../Ship")
+[node name="RaceUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Man01" parent="RaceUI" node_paths=PackedStringArray("ship") instance=ExtResource("4_lquwl")]
+layout_mode = 1
+ship = NodePath("../../Ships/Player")
+
+[node name="Ships" type="Node3D" parent="."]
+
+[node name="Player" parent="Ships" instance=ExtResource("4_1bvp3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)

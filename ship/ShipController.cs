@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 public struct ShipInput {
-	public float Thrust { get; set; }
+	public float Throttle { get; set; }
 	public readonly float Steer { get {
 		return SteerRight - SteerLeft;
 	} }
@@ -16,7 +16,7 @@ public struct ShipInput {
 public partial class ShipController : RigidBody3D
 {
 
-	private ShipInput _input = new();
+	public ShipInput _input = new();
 	[Export]
 	public ShipStats _stats;
 	[Export]
@@ -26,6 +26,9 @@ public partial class ShipController : RigidBody3D
 	[Export]
 	public BoostSystem _boostSystem;
 
+	[Export]
+	public int playerId;
+
 	public Node3D CameraAnchor { get; private set; }
 	public Node3D Model { get; private set; }
 
@@ -34,16 +37,15 @@ public partial class ShipController : RigidBody3D
 
 	// roll for turning
 	private float maxTilt = 0.5f;
-	private float tilt;
-	private float tiltGoal;
+	public float Tilt { get; private set; }
+
+	public float Thrust { get; private set; }
 
 	public override void _Ready()
 	{
 
 		CameraAnchor = GetNode<Node3D>("%CameraAnchor");
-		Model = GetNode<Node3D>("%ShipModel");
-
-		GD.Print(CameraAnchor);
+		Model = GetNode<Node3D>("%ModelContainer");
 
 		Mass = _stats.weight;
 		foreach (Airbrake brake in _airbrakesLeft) {
@@ -65,7 +67,7 @@ public partial class ShipController : RigidBody3D
     public override void _Input(InputEvent @event)
     {
 		if (@event.IsAction("ship_thrust")) {
-			_input.Thrust = @event.GetActionStrength("ship_thrust");
+			_input.Throttle = @event.GetActionStrength("ship_thrust");
 		}
 		if (@event.IsAction("ship_left")) {
 			_input.SteerLeft = @event.GetActionStrength("ship_left");
@@ -94,11 +96,19 @@ public partial class ShipController : RigidBody3D
 
     public override void _PhysicsProcess(double delta)
     {
-		Vector3 thrust = GetThrustVector(_input.Thrust);
-		ApplyForce(thrust);
+		float thrustDelta = (float) delta * _stats.thrustGain;
+		if (_input.Throttle > Thrust) Thrust += thrustDelta;
+		else if (_input.Throttle < Thrust) Thrust -= thrustDelta;
+
+		Vector3 thrustForce = - Basis.Z * Thrust * _stats.thrust;
+		ApplyForce(thrustForce);
 
 		Vector3 drag = GetDragVector();
 		ApplyForce(drag);
+
+		float brakeStrength = Math.Clamp(Mass * ForwardVelocity.Length(), 0.5f, 1) * _stats.thrust * 0.5f * Mathf.Lerp(1, 0, _input.Throttle);
+		Vector3 brakeForce = - ForwardVelocity.Normalized() * brakeStrength;
+		ApplyForce(brakeForce);
 
 		Vector3 angleBrake = new(0, -AngularVelocity.Y, 0); 
 		ApplyTorque(angleBrake * Mass);
@@ -111,19 +121,19 @@ public partial class ShipController : RigidBody3D
 
 		float rotPerSec;
 
-		tiltGoal = _input.Steer * maxTilt;
+		float tiltGoal = _input.Steer * maxTilt;
 
 		float tiltEpsilon = 0.1f;
-		if (Math.Abs(tiltGoal - tilt) > tiltEpsilon) {
-			tilt += _stats.tiltRate * (float) delta * Math.Sign(tiltGoal - tilt);
+		if (Math.Abs(tiltGoal - Tilt) > tiltEpsilon) {
+			Tilt += _stats.tiltRate * (float) delta * Math.Sign(tiltGoal - Tilt);
 		} else {
-			tilt = tiltGoal;
+			Tilt = tiltGoal;
 		}
 
-		Model.Rotation = Vector3.Forward * tilt;
+		Model.Rotation = Vector3.Forward * Tilt;
 
-		if (Math.Abs(tilt) > 0) {
-			float turn = tilt / maxTilt * _stats.maxTurn;
+		if (Math.Abs(Tilt) > 0) {
+			float turn = Tilt / maxTilt * _stats.maxTurn;
 			float deltaTheta = - turn * (float) delta;
 			float omega = deltaTheta / (float) delta;
 			float turnRadius = LinearVelocity.Length() / omega;
@@ -162,10 +172,6 @@ public partial class ShipController : RigidBody3D
 		}
     }
 
-	private Vector3 GetThrustVector(float throttle) {
-		return - Basis.Z * _stats.thrust * throttle;
-	}
-
 	private Vector3 GetDragVector() {
 		float magnitude = 0.5f * density * _stats.area * _stats.dragCoeff * LinearVelocity.LengthSquared();
 		return -1 * LinearVelocity.Normalized() * magnitude;
@@ -173,7 +179,6 @@ public partial class ShipController : RigidBody3D
 
 	private void ApplyAirbrake(Airbrake airbrake, float amt) {
 		Vector3 pos = airbrake.GlobalPosition - GlobalPosition;
-		GD.Print(pos);
 		float magnitude = 0.5f * density * airbrake.size * ForwardVelocity.LengthSquared() * amt;
 		float adjusted = Math.Max(magnitude, 0);
 		Vector3 airbrakeDrag = -1 * ForwardVelocity.Normalized() * adjusted;

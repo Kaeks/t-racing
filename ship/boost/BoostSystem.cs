@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public abstract partial class BoostSystem : Node
+public abstract partial class BoostSystem : Node3D
 {
 
 	[Export]

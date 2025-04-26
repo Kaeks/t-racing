@@ -10,6 +10,15 @@ public partial class BurstBoost : BoostSystem
 
     private bool toBoost = false;
 
+    private AudioStreamPlayer3D _player;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        _player = GetNode<AudioStreamPlayer3D>("%TriggerAudio");
+    }
+
+
     public override void _Process(double delta)
     {
         if (sinceLast > -1) sinceLast += delta;
@@ -31,7 +40,7 @@ public partial class BurstBoost : BoostSystem
     {
         // ready
         if (sinceLast != -1) return;
-        GD.Print("GO");
+        _player.Play();
         toBoost = true;
         sinceLast = 0;
     }
